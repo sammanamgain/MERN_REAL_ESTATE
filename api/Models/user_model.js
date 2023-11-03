@@ -14,7 +14,8 @@ const userschema = new mongoose.Schema({
         type: String,
       
         required: true
-    }
-}, { timestamp: true });
+    },
+    timestamp: {type:Date,require:true,default:Date.now()} }
+);
 const User = mongoose.model('User', userschema);
 module.exports = User;
