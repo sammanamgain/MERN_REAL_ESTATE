@@ -6,7 +6,7 @@ exports.signup = async (req, res, next) => {
         res.status(201).json({ message: "success" })
     }
     catch (e) {
-        res.status(404).json({ message: "failed" ,error:e })
+        next(e)
     }
     next();
 }
