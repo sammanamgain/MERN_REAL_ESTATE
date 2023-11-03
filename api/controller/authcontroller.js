@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('./../Models/user_model')
-const customerror = require('./../utlility/customerror');
+const custom = require('./../utlility/customerror');
 
 
 exports.signup = async (req, res, next) => {
@@ -23,15 +23,16 @@ exports.signup = async (req, res, next) => {
 }
 exports.signin = async (req, res, next) => {
     let { email, password } = req.body;
-    const query = await User.findOne({ email: email});
+  
+    const query = await User.findOne({ email});
     if (!query)
     {
-        return next(customerror(404,'user not found '))
+        return next(custom.customerror(404,'user not found '))
         
     }
     const validpassword = await bcrypt.compareSync(password, query.password);
     if (!validpassword) {
-        return next(customerror(401, 'Wrong Password'));
+        return next(custom.customerror(401, 'Wrong Password'));
     }
    const { password:pass, ...rest } = query._doc;
     const token = jwt.sign({ id: query._id }, process.env.jWT_SECRET);
