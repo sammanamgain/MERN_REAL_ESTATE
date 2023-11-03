@@ -6,6 +6,7 @@ require('dotenv').config({ path: './../.env' });
 const user_router = require('./routes/user_routes');
 const auth_router = require('./routes/auth_routes');
 const app = express();
+
 // console.log(process.env.mongo, {
 //     useNewUrlParser: true,
 //     dbName: "real_estate" 
