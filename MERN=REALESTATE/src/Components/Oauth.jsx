@@ -46,11 +46,11 @@ export default function Oauth() {
         }
     }
   return (
-    <div>
+    <div className="min-w-lg">
       <button
         onClick={handleonclick}
         type="button"
-        className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95"
+        className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95 self-center "
       >
         Continue with google
       </button>
