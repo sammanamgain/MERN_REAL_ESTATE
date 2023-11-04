@@ -12,10 +12,12 @@ const userschema = new mongoose.Schema({
     },
     password: {
         type: String,
-      
+
         required: true
     },
-    timestamp: {type:Date,require:true,default:Date.now()} }
+    avator: { type: String, default: "https://t4.ftcdn.net/jpg/04/83/90/95/360_F_483909569_OI4LKNeFgHwvvVju60fejLd9gj43dIcd.jpg" }
+    , timestamp: { type: Date, require: true, default: Date.now() }
+}
 );
 const User = mongoose.model('User', userschema);
 module.exports = User;

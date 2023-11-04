@@ -1,11 +1,13 @@
 import { React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   signInStart,
   signInSucess,
   signInFailure,
 } from "./../redux/user/userSlice.js";
+import Oauth from "../Components/Oauth.jsx";
 export default function Signin() {
   console.log("is this file is reached");
   //arrary destructuring
@@ -69,7 +71,6 @@ export default function Signin() {
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form className="flex flex-col gap-4" onSubmit={submit}>
-       
         <input
           type="email"
           placeholder="email"
@@ -94,7 +95,9 @@ export default function Signin() {
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
+        <Oauth/>
       </form>
+
       <div className="flex gap-2 mt-5">
         <p>Don't Have an account?</p>
         <Link to="/sign-up">

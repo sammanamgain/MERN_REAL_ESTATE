@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { Link ,useNavigate} from "react-router-dom";
+import Oauth from "../Components/Oauth";
 
 export default function Signup() {
   //arrary destructuring
@@ -97,14 +98,16 @@ export default function Signup() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        <Oauth></Oauth>
       </form>
+
       <div className="flex gap-2 mt-5">
         <p> Have an account?</p>
         <Link to="/sign-in">
           <span className="text-blue-700">Sign Up</span>
         </Link>
       </div>
-      {error&&<p className="text-red-700">{error}</p>}
+      {error && <p className="text-red-700">{error}</p>}
     </div>
   );
 }
