@@ -65,8 +65,28 @@ exports.updateuser = async (req, res, next) => {
         res.status(200).json(rest);
     } catch (err)
     {
-        console.log("printing error");
-        console.log(err);
+       
         next(err);
     }
+}
+exports.deleteuser = async(req, res, next) => {
+    if (req.user.id !== req.params.id) {
+        return next(customerror(401, "you aren't allowed to delete others id"))
+    }
+    try {
+        await USER.findByIdAndDelete(req.params.id)
+        res.clearCookie('access_token');
+        res.status(200).json({ success: true, message: "User has been deleted" });
+        
+    }
+    catch (err)
+    {
+        
+        next(err)
+
+    }
+
+
+
+
 }

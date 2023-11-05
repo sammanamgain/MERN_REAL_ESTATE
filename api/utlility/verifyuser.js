@@ -1,6 +1,6 @@
 const { customerror } = require("./customerror");
 const jwt = require('jsonwebtoken');
-const errorhandler=require("../controller/errorhandling");
+const errorhandler=require("./../controller/errorhandling");
 
 
 exports.verifyToken = (req, res, next) => {
@@ -12,12 +12,13 @@ exports.verifyToken = (req, res, next) => {
 
         if (!token) {
             console.log("not found");
-            return errorhandler(customerror(401, 'unauthorized access'));
+            const e = customerror(401, 'unauthorized access');
+             errorhandler.handle(e,req,res);
         }
         jwt.verify(token, process.env.jWT_SECRET, (err, user) => {
             console.log("found");
             if (err) {
-                return errorhandler(customerror(401, 'Invalid token'));
+                return errorhandler.handle(customerror(401, 'Invalid token'));
 
             }
             console.log(user);
@@ -28,7 +29,9 @@ exports.verifyToken = (req, res, next) => {
         
     } catch (e)
     {
+        
         console.log("catch block");
+        console.log(e);
          res.status(500).json({message:"failed token" ,success:false})
     }
  

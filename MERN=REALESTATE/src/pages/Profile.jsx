@@ -13,6 +13,7 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,deleteUserFailure,deleteUserSuccess
 } from "./../redux/user/userSlice.js";
 import { current } from "@reduxjs/toolkit";
 
@@ -27,9 +28,12 @@ export default function Profile() {
   const [formData, setformData] = useState({});
   //console.log(formData.avator);
   const [fileUploadError, setFileUploadError] = useState(false);
+   const [del, setdel] = useState(false);
   const [updatesuccess, setupdatesuccess] = useState(false);
+ 
 
   const handleFileUpload = (file) => {
+    console.log(file);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
@@ -102,6 +106,27 @@ export default function Profile() {
     }
     
   }
+  const handleDelete = async () => {
+    dispatch(deleteUserStart())
+    console.log("deleted");
+    try {
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE" });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false)
+      {
+        dispatch(deleteUserFailure(data.message));
+      }
+      dispatch(deleteUserSuccess());
+      setdel(true);
+    }
+    catch (err)
+    {
+       dispatch(deleteUserFailure());
+    }
+    
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7"> Profile </h1>
@@ -165,11 +190,20 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer ">Delete Account</span>
+        <span onClick={handleDelete} className="text-red-700 cursor-pointer ">
+          Delete Account
+        </span>
         <span className="text-red-700 cursor-pointer ">Sign Out</span>
       </div>
       <p className="text-red-700"> {error ? error : ""}</p>
-      <p className="text-green-700"> {updatesuccess ? "Successfully Updated" : ""}</p>
+      <p className="text-green-700">
+        {" "}
+        {updatesuccess ? "Successfully Updated" : ""}
+      </p>
+      <p className="text-green-700">
+       
+        {del ? "Successfully Deleted" : ""}
+      </p>
     </div>
   );
 }

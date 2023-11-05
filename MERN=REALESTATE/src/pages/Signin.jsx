@@ -49,6 +49,7 @@ export default function Signin() {
         console.log(data.status);
         // seterror(data.message);
         // setloading(false);
+        console.log(data.message)
        
         dispatch(signInFailure(data.message))
 

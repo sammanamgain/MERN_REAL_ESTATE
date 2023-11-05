@@ -1,8 +1,12 @@
-exports.handle = (err, req, res, next) => {
+exports.handle = (err, req, res) => {
     console.log("is this file called");
-    const statuscode = err.statuscode || 500;
-    const message = err.message || err;
-    res.status(statuscode).json({ success:false, message:message });
-    next();
+    console.log(err);
+    
+    const statuscode = err && err.status ? err.status : 500;
+    const message = err && err.message ? err.message : "Internal Server Error";
+
+    console.log(statuscode, message);
+    res.status(statuscode).json({status:false, message });
+    //next();
     
 }
