@@ -1,8 +1,12 @@
-import { React,useRef,useState,useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { React, useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { app } from "./../firebase";
-import { getDownloadURL, getStorage,ref, uploadBytesResumable } from "firebase/storage";
-
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export default function Profile() {
   const [file, setfile] = useState(undefined);
@@ -20,8 +24,8 @@ export default function Profile() {
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
- uploadTask.on(
-      'state_changed',
+    uploadTask.on(
+      "state_changed",
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -36,19 +40,17 @@ export default function Profile() {
         );
       }
     );
-};
-   
-    console.log(filepercentage);
-   
-  
+  };
+
+  console.log(filepercentage);
+
   useEffect(() => {
-    if (file)
-    {
+    if (file) {
       handleFileUpload(file);
-      }
-  },[file])
+    }
+  }, [file]);
   console.log(file);
-  
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7"> Profile </h1>

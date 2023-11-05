@@ -1,4 +1,4 @@
-
+const cookieParser = require('cookie-parser');
 const { mongoose } = require("mongoose");
 const express = require('express');
 const dotenv = require('dotenv');
@@ -20,6 +20,7 @@ mongoose
         console.log(e);
     });
 app.use(express.json());
+app.use(cookieParser());
 app.use('/api/user', user_router);
 app.use('/api/auth', auth_router);
 
