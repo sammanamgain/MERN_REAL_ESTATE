@@ -1,22 +1,31 @@
-import { React, useRef, useState, useEffect } from "react";
+import {  useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "./../firebase";
+import { useDispatch} from "react-redux";
+
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "./../redux/user/userSlice.js";
+import { current } from "@reduxjs/toolkit";
 
 export default function Profile() {
+    const dispatch = useDispatch();
   const [file, setfile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
 
   const fileRef = useRef(null);
   const { currentUser } = useSelector((state) => state.user);
-  const [filepercentage, setfilepercentage] = useState(0);
+ // const [filepercentage, setfilepercentage] = useState(0);
   const [formData, setformData] = useState({});
-  console.log(formData.avator);
+  //console.log(formData.avator);
   const [fileUploadError, setFileUploadError] = useState(false);
 
   const handleFileUpload = (file) => {
@@ -35,14 +44,17 @@ export default function Profile() {
         setFileUploadError(true);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setformData({ ...formData, avator: downloadURL })
+          console.log(downloadURL);
+        }
         );
+       console.log(formData)
       }
     );
   };
+  //console.log(formData);
 
-  console.log(filepercentage);
 
   useEffect(() => {
     if (file) {
@@ -50,11 +62,48 @@ export default function Profile() {
     }
   }, [file]);
   console.log(file);
-
+  const handleChange = (e) => {
+    setformData({ ...formData, [e.target.id]:[e.target.value] })
+  
+  }
+  const handlesubmit =async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      console.log(e.target);
+      console.log(formData);
+      console.log(currentUser.id);
+     const res = await fetch(`/api/user/update/${currentUser._id}`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(formData),
+     });
+     const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        console.log('is it so?')
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      else {
+        dispatch(updateUserSuccess(data));
+        console.log('update current user', currentUser);
+      }
+      
+      
+    }
+    catch (e)
+    {
+        dispatch(updateUserFailure(e.message))
+    }
+    
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7"> Profile </h1>
-      <form className="flex flex-col gap-4 ">
+      <form className="flex flex-col gap-4 " onSubmit={handlesubmit}>
         <input
           onChange={(e) => setfile(e.target.files[0])}
           type="file"
@@ -87,18 +136,23 @@ export default function Profile() {
           placeholder="UserName"
           className="border p-3  rounded-lg"
           id="username"
+          defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
           className="border p-3  rounded-lg"
           id="email"
+          defaultValue={currentUser.email}
+          onChange={handleChange}
         />
         <input
           type="password "
           placeholder="Password"
           className="border p-3  rounded-lg"
           id="password"
+          onChange={handleChange}
         />
         <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95">
           Update

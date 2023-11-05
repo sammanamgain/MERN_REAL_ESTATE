@@ -12,7 +12,13 @@ const app = express();
 //     dbName: "real_estate" 
 // });
 mongoose
-    .connect(process.env.mongo)
+    .connect(process.env.mongo, {
+        useNewUrlParser: true,
+    
+        useUnifiedTopology: true,
+   
+    }
+)
     .then(() => {
         console.log("connected");
     })
