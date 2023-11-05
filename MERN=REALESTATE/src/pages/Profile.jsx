@@ -22,11 +22,12 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
 
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,loading,error } = useSelector((state) => state.user);
  // const [filepercentage, setfilepercentage] = useState(0);
   const [formData, setformData] = useState({});
   //console.log(formData.avator);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [updatesuccess, setupdatesuccess] = useState(false);
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
@@ -90,6 +91,7 @@ export default function Profile() {
       else {
         dispatch(updateUserSuccess(data));
         console.log('update current user', currentUser);
+        setupdatesuccess(true);
       }
       
       
@@ -148,20 +150,26 @@ export default function Profile() {
           onChange={handleChange}
         />
         <input
-          type="password "
+          type="password"
           placeholder="Password"
           className="border p-3  rounded-lg"
           id="password"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95">
-          Update
+
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95"
+        >
+          {loading ? "Loading" : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer ">Delete Account</span>
         <span className="text-red-700 cursor-pointer ">Sign Out</span>
       </div>
+      <p className="text-red-700"> {error ? error : ""}</p>
+      <p className="text-green-700"> {updatesuccess ? "Successfully Updated" : ""}</p>
     </div>
   );
 }

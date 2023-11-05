@@ -18,7 +18,8 @@ exports.updateuser = async (req, res, next) => {
         console.log("one");
         if (req.body.password)
         {
-            req.body.password = bcrypt.hashSync(req.body.password, 12);
+            let p1 = req.body.password.toString();
+            req.body.password = bcrypt.hashSync(p1, 12);
         }
         //console.log(req.params.id);
         // console.log(req.body.username.toString());
@@ -64,6 +65,7 @@ exports.updateuser = async (req, res, next) => {
         res.status(200).json(rest);
     } catch (err)
     {
+        console.log("printing error");
         console.log(err);
         next(err);
     }
