@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "./../firebase";
 import { useDispatch } from "react-redux";
+import {Link } from "react-router-dom";
 
 import {
   getDownloadURL,
@@ -199,6 +200,9 @@ export default function Profile() {
         >
           {loading ? "Loading" : "Update"}
         </button>
+        <Link className="flex bg-green-700 text-white p-3 uppercase text-center hover:opacity-80" to='/create-listing'>
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDelete} className="text-red-700 cursor-pointer ">
