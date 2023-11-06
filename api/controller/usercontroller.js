@@ -85,8 +85,20 @@ exports.deleteuser = async(req, res, next) => {
         next(err)
 
     }
+}
+exports.signout = async (req, res, next) => {
+    if (req.user.id !== req.params.id) {
+        return next(customerror(401, "you aren't allowed to delete others id"))
+    }
+    try {
+        
+        res.clearCookie('access_token');
+        res.status(200).json({ success: true, message: "User has been signout successfully" });
 
+    }
+    catch (err) {
 
+        next(err)
 
-
+    }
 }

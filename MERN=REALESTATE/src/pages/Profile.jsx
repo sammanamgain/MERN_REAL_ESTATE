@@ -1,7 +1,7 @@
-import {  useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "./../firebase";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
   getDownloadURL,
@@ -13,24 +13,28 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
-  deleteUserStart,deleteUserFailure,deleteUserSuccess
+  deleteUserStart,
+  deleteUserFailure,
+  deleteUserSuccess,
+  signoutUserStart,
+  signoutUserFailure,
+  signoutUserSuccess,
 } from "./../redux/user/userSlice.js";
 import { current } from "@reduxjs/toolkit";
 
 export default function Profile() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [file, setfile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
 
   const fileRef = useRef(null);
-  const { currentUser,loading,error } = useSelector((state) => state.user);
- // const [filepercentage, setfilepercentage] = useState(0);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
+  // const [filepercentage, setfilepercentage] = useState(0);
   const [formData, setformData] = useState({});
   //console.log(formData.avator);
   const [fileUploadError, setFileUploadError] = useState(false);
-   const [del, setdel] = useState(false);
+  const [del, setdel] = useState(false);
   const [updatesuccess, setupdatesuccess] = useState(false);
- 
 
   const handleFileUpload = (file) => {
     console.log(file);
@@ -50,16 +54,14 @@ export default function Profile() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setformData({ ...formData, avator: downloadURL })
+          setformData({ ...formData, avator: downloadURL });
           console.log(downloadURL);
-        }
-        );
-       console.log(formData)
+        });
+        console.log(formData);
       }
     );
   };
   //console.log(formData);
-
 
   useEffect(() => {
     if (file) {
@@ -68,62 +70,71 @@ export default function Profile() {
   }, [file]);
   console.log(file);
   const handleChange = (e) => {
-    setformData({ ...formData, [e.target.id]:[e.target.value] })
-  
-  }
-  const handlesubmit =async (e) => {
+    setformData({ ...formData, [e.target.id]: [e.target.value] });
+  };
+  const handlesubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
       console.log(e.target);
       console.log(formData);
       console.log(currentUser.id);
-     const res = await fetch(`/api/user/update/${currentUser._id}`, {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify(formData),
-     });
-     const data = await res.json();
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
       console.log(data);
       if (data.success === false) {
-        console.log('is it so?')
+        console.log("is it so?");
         dispatch(updateUserFailure(data.message));
         return;
-      }
-      else {
+      } else {
         dispatch(updateUserSuccess(data));
-        console.log('update current user', currentUser);
+        console.log("update current user", currentUser);
         setupdatesuccess(true);
       }
-      
-      
+    } catch (e) {
+      dispatch(updateUserFailure(e.message));
     }
-    catch (e)
-    {
-        dispatch(updateUserFailure(e.message))
-    }
-    
-  }
+  };
   const handleDelete = async () => {
-    dispatch(deleteUserStart())
+    dispatch(deleteUserStart());
     console.log("deleted");
     try {
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE" });
+        method: "DELETE",
+      });
       const data = await res.json();
       console.log(data);
-      if (data.success === false)
-      {
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
       }
       dispatch(deleteUserSuccess());
       setdel(true);
+    } catch (err) {
+      dispatch(deleteUserFailure());
     }
-    catch (err)
-    {
-       dispatch(deleteUserFailure());
+  };
+  const handleSignout = async() => {
+    try {
+      const res = await fetch(`/api/user/signout/${currentUser._id}`, {
+        method: "GET",
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        console.log("user deletion failed");
+       dispatch(signoutUserFailure(data.message));
+      }
+      dispatch(signoutUserSuccess());
+      setdel(true);
+    } catch (err) {
+      console.log(err);
+    dispatch(signoutUserFailure());
     }
     
   }
@@ -193,17 +204,14 @@ export default function Profile() {
         <span onClick={handleDelete} className="text-red-700 cursor-pointer ">
           Delete Account
         </span>
-        <span className="text-red-700 cursor-pointer ">Sign Out</span>
+        <span onClick={handleSignout}  className="text-red-700 cursor-pointer ">Sign Out</span>
       </div>
       <p className="text-red-700"> {error ? error : ""}</p>
       <p className="text-green-700">
         {" "}
         {updatesuccess ? "Successfully Updated" : ""}
       </p>
-      <p className="text-green-700">
-       
-        {del ? "Successfully Deleted" : ""}
-      </p>
+      <p className="text-green-700">{del ? "Successfully Deleted" : ""}</p>
     </div>
   );
 }
