@@ -109,9 +109,9 @@ exports.listing = async (req, res, next) => {
         if (req.user.id !== req.params.id) {
             return next(customerror(401, "you aren't allowed to see  others id"))
         }
-        const listing=await LISTING.find({ userRef:req.params.id })
+        const list=await LISTING.find({ userRef:req.params.id })
      
-        res.status(200).json({ success: true, data:listing });
+        res.status(200).json({ success: true, message:list });
 
     }
     catch (err) {

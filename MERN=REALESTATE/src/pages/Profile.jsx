@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "./../firebase";
 import { useDispatch } from "react-redux";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   getDownloadURL,
@@ -24,6 +24,7 @@ import {
 import { current } from "@reduxjs/toolkit";
 
 export default function Profile() {
+  const [listing, setlisting] = useState({});
   const dispatch = useDispatch();
   const [file, setfile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
@@ -36,6 +37,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [del, setdel] = useState(false);
   const [updatesuccess, setupdatesuccess] = useState(false);
+  const [listingerror, setlistingerror] = useState(false);
 
   const handleFileUpload = (file) => {
     console.log(file);
@@ -58,11 +60,11 @@ export default function Profile() {
           setformData({ ...formData, avator: downloadURL });
           console.log(downloadURL);
         });
-        console.log(formData);
+        //console.log(formData);
       }
     );
   };
-  //console.log(formData);
+  //console.log(formData.avator);
 
   useEffect(() => {
     if (file) {
@@ -120,9 +122,9 @@ export default function Profile() {
       dispatch(deleteUserFailure());
     }
   };
-  const handleSignout = async() => {
+  const handleSignout = async () => {
     try {
-      dispatch(signoutUserStart())
+      dispatch(signoutUserStart());
       const res = await fetch(`/api/user/signout/${currentUser._id}`, {
         method: "GET",
       });
@@ -130,15 +132,50 @@ export default function Profile() {
       console.log(data);
       if (data.success === false) {
         console.log("user deletion failed");
-       dispatch(signoutUserFailure(data.message));
+        dispatch(signoutUserFailure(data.message));
       }
       dispatch(signoutUserSuccess());
       setdel(true);
     } catch (err) {
       console.log(err);
-    dispatch(signoutUserFailure());
+      dispatch(signoutUserFailure());
     }
-    
+  };
+  const showlisting = async () => {
+    console.log("called");
+    try {
+      setlistingerror(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setlistingerror(true);
+        return;
+      }
+      console.log(data);
+      setlisting(data.message);
+    } catch (err) {
+      console.log(err);
+      setlistingerror(true);
+    }
+  };
+
+
+  const handlelistdelete =async (id) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${id}`, { method: 'Delete' });
+      const data = await res.json();
+      if (data.succes == false)
+      {
+        console.log(data.message);
+        return;
+      }
+      setlisting((prev) => prev.filter((listing) => listing._id !== id));
+      
+    }
+    catch (err)
+    {
+      console.log(err.message);
+    }
   }
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -201,7 +238,10 @@ export default function Profile() {
         >
           {loading ? "Loading" : "Update"}
         </button>
-        <Link className="flex bg-green-700 text-white p-3 uppercase text-center hover:opacity-80" to='/create-listing'>
+        <Link
+          className="flex bg-green-700 text-white p-3 uppercase text-center hover:opacity-80"
+          to="/create-listing"
+        >
           Create Listing
         </Link>
       </form>
@@ -209,7 +249,9 @@ export default function Profile() {
         <span onClick={handleDelete} className="text-red-700 cursor-pointer ">
           Delete Account
         </span>
-        <span onClick={handleSignout}  className="text-red-700 cursor-pointer ">Sign Out</span>
+        <span onClick={handleSignout} className="text-red-700 cursor-pointer ">
+          Sign Out
+        </span>
       </div>
       <p className="text-red-700"> {error ? error : ""}</p>
       <p className="text-green-700">
@@ -217,6 +259,49 @@ export default function Profile() {
         {updatesuccess ? "Successfully Updated" : ""}
       </p>
       <p className="text-green-700">{del ? "Successfully Deleted" : ""}</p>
+      <button onClick={showlisting} className="text-green-700 w-full ">
+        Show Listings{" "}
+      </button>
+      {listingerror ? <p>Listing Error</p> : ""}{" "}
+      {listing && listing.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-7 text-2xl font-semibold">
+            Your Listings
+          </h1>
+          {listing.map((listing) => (
+            <div
+              key={listing._id}
+              className="border rounded-lg p-3 flex justify-between items-center gap-4"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listing cover"
+                  className="h-16 w-16 object-contain"
+                />
+              </Link>
+              <Link
+                className="text-slate-700 font-semibold  hover:underline truncate flex-1"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+
+              <div className="flex flex-col item-center">
+                <button
+                 onClick={()=>handlelistdelete(listing._id)}
+                  className="text-red-700 uppercase"
+                >
+                  Delete
+                </button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="text-green-700 uppercase">Edit</button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
