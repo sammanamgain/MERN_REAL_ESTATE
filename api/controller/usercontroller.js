@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const errorhandler = require("./errorhandling");
 const bcrypt = require('bcryptjs');
 const USER = require('./../Models/user_model');
+const LISTING = require('./../Models/listing_model');
 
 exports.gettest = (req, res) => {
     res.status(200).json({ message: "i am awesome" })
@@ -94,6 +95,23 @@ exports.signout = async (req, res, next) => {
         
         res.clearCookie('access_token');
         res.status(200).json({ success: true, message: "User has been signout successfully" });
+
+    }
+    catch (err) {
+
+        next(err)
+
+    }
+}
+exports.listing = async (req, res, next) => {
+ 
+    try {
+        if (req.user.id !== req.params.id) {
+            return next(customerror(401, "you aren't allowed to see  others id"))
+        }
+        const listing=await LISTING.find({ userRef:req.params.id })
+     
+        res.status(200).json({ success: true, data:listing });
 
     }
     catch (err) {
