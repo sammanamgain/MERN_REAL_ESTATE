@@ -13,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
         if (!token) {
             console.log("not found");
             const e = customerror(401, 'unauthorized access');
-             errorhandler.handle(e,req,res);
+            next(e);
         }
         jwt.verify(token, process.env.jWT_SECRET, (err, user) => {
             console.log("found");

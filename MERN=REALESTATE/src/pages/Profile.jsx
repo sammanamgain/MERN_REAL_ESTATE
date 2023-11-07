@@ -122,6 +122,7 @@ export default function Profile() {
   };
   const handleSignout = async() => {
     try {
+      dispatch(signoutUserStart())
       const res = await fetch(`/api/user/signout/${currentUser._id}`, {
         method: "GET",
       });
