@@ -6,5 +6,6 @@ const verify = require('./../utlility/verifyuser')
 router.post('/create', verify.verifyToken, listing.createlisting, handler.handle)
 router.delete('/delete/:id', verify.verifyToken, listing.delete, handler.handle)
 router.post('/update/:id', verify.verifyToken, listing.updateListing, handler.handle)
-router.get('/get/:id',  listing.getListing, handler.handle)
+router.get('/get/:id', listing.getListing, handler.handle)
+router.get('/getall', listing.getallListing, handler.handle)
 module.exports = router;
