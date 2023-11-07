@@ -9,6 +9,7 @@ import Header from './Components/Header'
 import PrivateRoute from './Components/privateRoute'
 import CreateListing from './pages/CreateListing'
 import UpdatListing from './pages/UpdatListing'
+import Listing from './pages/Listing'
 export default function App() {
   return (
     <BrowserRouter>
@@ -18,6 +19,8 @@ export default function App() {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/about" element={<About />} />
+        <Route path="/listing/:listingId" element={<Listing/>} />
+
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
