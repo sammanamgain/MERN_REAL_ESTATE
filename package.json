@@ -4,7 +4,9 @@
   "description": "<<<<<<< HEAD\r # MERN-Real-estate\r A complete real estate app using MERN\r =======\r # React + Vite",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node api/index.js",
+    "build":"npm install &&  npm install --prefix MERN=REALESTATE && npm run build --prefix MERN=REALESTATE"
   },
   "keywords": [],
   "author": "",
