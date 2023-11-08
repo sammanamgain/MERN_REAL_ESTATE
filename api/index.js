@@ -31,4 +31,4 @@ app.use(express.static(path.join(__dirname1, '/MERN=REALESTATE/dist')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname1, 'MERN=REALESTATE', 'dist', 'index.html'));
 })
-app.listen('3000', 'localhost', () => { console.log('listening on 3000 port') })
+app.listen('5000',  () => { console.log('listening on 3000 port') })
