@@ -106,5 +106,14 @@ If you have any feedback, please reach out to us at amgain02@gmail.com
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![image](https://github.com/sammanamgain/MERN_REAL_ESTATE/assets/78356846/32528483-9570-42b2-9468-b684edff8859)
+![image](https://github.com/sammanamgain/MERN_REAL_ESTATE/assets/78356846/09928a88-784a-4793-a280-eb91e651366e)
+![image](https://github.com/sammanamgain/MERN_REAL_ESTATE/assets/78356846/0543d8a2-68de-4342-a9f1-2bdfd06c801b)
+![image](https://github.com/sammanamgain/MERN_REAL_ESTATE/assets/78356846/112590a6-f2ac-4a2b-8a65-88bd0172f61c)
+![image](https://github.com/sammanamgain/MERN_REAL_ESTATE/assets/78356846/f0251911-63a9-4a45-bdde-047b546ff1a6)
+
+
+
+
+
 
